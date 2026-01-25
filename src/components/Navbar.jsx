@@ -43,7 +43,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/">
             <Image
-              src='../../public/ecommerce-logo.svg'
+              src='/ecommerce-logo.svg'
               alt="E-commerce Logo"
               boxSize="50px"
               objectFit="contain"

@@ -35,6 +35,8 @@ const Register = () => {
         duration: 2000,
         isClosable:true
        })
+           console.log("Full error response:", error.response?.data);
+
             alert('Registration failed',error)
       const errorMessage = error.response?.data?.message || error.message || 'Registration failed'
             alert(errorMessage)

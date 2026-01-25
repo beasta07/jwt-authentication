@@ -4,19 +4,23 @@ export const useAuthStore = create((set)=>({
 
   accessToken: localStorage.getItem('accessToken')|| null,
   refreshToken: localStorage.getItem('refreshToken')|| null,
-
-    setTokens: ({accessToken, refreshToken})=> {
+  userRole: localStorage.getItem('userRole')|| null,
+    setTokens: ({accessToken, refreshToken,userRole})=> {
         if (accessToken) {
             localStorage.setItem('accessToken',accessToken)
         }
         if (refreshToken) {
             localStorage.setItem('refreshToken',refreshToken)
         }
+        if (userRole) {
+            localStorage.setItem('userRole',userRole)
+        }
         set({accessToken,refreshToken})
     },
     clearTokens : ()=> {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken')
-        set({accessToken:null , refreshToken:null})
+        localStorage.removeItem('userRole')
+        set({accessToken:null , userRole:null , refreshToken:null})
     }
 }))
