@@ -3,6 +3,10 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useLogin } from "../services/auth";
 import { useAuthStore } from "../store/authStore";
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../services/firebaseConfig";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook, FaGithub } from "react-icons/fa";
 
 const Login = () => {
   const { setTokens } = useAuthStore();
@@ -26,7 +30,7 @@ const Login = () => {
       const response = await login(data);
       const { accessToken, refreshToken } = response.data.data;
       const userRole = response.data.data.user.role;
-      
+
       setTokens({
         accessToken,
         refreshToken,
@@ -52,7 +56,51 @@ const Login = () => {
       });
     }
   };
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider()
+    try {
+      const result = await signInWithPopup(auth, provider)
+      console.log('google logged in user', result.user)
+      const { accessToken, refreshToken } = result.user.stsTokenManager
+      setTokens({
+        accessToken,
+        refreshToken,
+        userRole: "USER"
+      })
+      navigate('/product')
+    }
+    catch (error) {
+      console.error(error)
+    }
+  }
+  const signInWithGithub = async ()=>{
+    const provider = new GithubAuthProvider()
+    try{
+      const result = await signInWithPopup(auth,provider)
+      console.log('User logged in with Github',result)
+      const {accessToken,refreshToken}=result.token.stsTokenManager
+      setTokens({
+        accessToken,refreshToken,userRole:'USER'
+      }
+   )
+    } catch(error){
+      console.error(error)
+    }
+  }
+  const signInWithFacebook= async ()=>{
+    const provider = new FacebookAuthProvider()
+    try{
 
+      const result = await signInWithPopup(auth,provider)
+      const {accessToken,refreshToken}= result.token.stsTokenManager
+      setTokens({
+        accessToken,refreshToken
+      })
+    }catch(error){
+      console.error(error)
+
+    }
+  }
   return (
     <Box
       w={{ base: "90%", md: "400px" }}
@@ -81,7 +129,7 @@ const Login = () => {
             />
             <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
           </FormControl>
-          
+
           <FormControl isInvalid={!!errors.password}>
             <FormLabel>Password</FormLabel>
             <Input
@@ -94,7 +142,7 @@ const Login = () => {
             />
             <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
           </FormControl>
-          
+
           <Button
             colorScheme="cyan"
             width={"full"}
@@ -104,7 +152,7 @@ const Login = () => {
           >
             Login
           </Button>
-          
+
           <Button
             variant={"outline"}
             colorScheme="cyan"
@@ -112,6 +160,36 @@ const Login = () => {
             onClick={() => navigate("/register")}
           >
             Create an account
+          </Button>
+          <Button
+            width='full'
+
+            onClick={() => signInWithGoogle()}
+          >
+            <Text marginEnd={'5'}>
+              Signin With Google
+            </Text>
+            <FcGoogle size={'24'} />
+          </Button>
+          <Button
+            width='full'
+
+            onClick={() => signInWithGithub()}
+          >
+            <Text marginEnd={'5'}>
+              Signin With Github
+            </Text>
+            <FaGithub  size={'24'} />
+          </Button>
+          <Button
+            width='full'
+
+            onClick={() => signInWithFacebook()}
+          >
+            <Text marginEnd={'5'}>
+              Signin With Facebook
+            </Text>
+            <FaFacebook color="blue"  size={'24'} />
           </Button>
         </VStack>
       </form>
